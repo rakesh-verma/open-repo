@@ -10,7 +10,7 @@ function submitData(globals) {
 
     $.ajax({
         type: "POST",
-        url: "/content/myformsite/us/en/requests/bacform",
+        url: "http://localhost:4502/bin/mysite/submitform",
         data: {
             "formdata": formData
         },
