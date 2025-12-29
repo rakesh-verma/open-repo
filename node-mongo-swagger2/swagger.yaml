@@ -1,0 +1,73 @@
+swagger: '2.0'
+info:
+  title: User API (Swagger 2.0)
+  description: Node Express MongoDB API with Swagger 2.0
+  version: 1.0.0
+host: localhost:3000
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /users:
+    post:
+      summary: Create a user
+      tags:
+        - Users
+      parameters:
+        - in: body
+          name: user
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '201':
+          description: User created
+    get:
+      summary: Get all users
+      tags:
+        - Users
+      responses:
+        '200':
+          description: List of users
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/User'
+  /users/{email}:
+    get:
+      summary: Get latest user by email
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: email
+          required: true
+          type: string
+      responses:
+        '200':
+          description: User found
+        '404':
+          description: User not found
+definitions:
+  User:
+    type: object
+    required:
+      - name
+      - email
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+responses: {}
+parameters: {}
+securityDefinitions: {}
+tags: []

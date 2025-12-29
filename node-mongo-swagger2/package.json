@@ -1,5 +1,5 @@
 {
-  "name": "swagger-mongo",
+  "name": "mongo-swagger2",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,6 @@
     "js-yaml": "^4.1.1",
     "mongodb": "^7.0.0",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1",
-    "yamljs": "^0.3.0"
+    "swagger-ui-express": "^5.0.1"
   }
 }

@@ -1,0 +1,55 @@
+swagger: '2.0'
+info:
+  title: Node API Library
+  version: 1.0.0
+  description: Node Express + MongoDB API
+host: localhost:3000
+basePath: /
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /customers:
+    post:
+      summary: Create customer
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: customer
+          required: true
+          schema:
+            $ref: '#/definitions/Customer'
+      responses:
+        '201':
+          description: Customer created
+definitions:
+  Customer:
+    type: object
+    required:
+      - id
+      - customerDetails
+      - contactDetails
+    properties:
+      id:
+        type: string
+        example: '12345'
+      customerDetails:
+        type: object
+        properties:
+          firstName:
+            type: string
+          lastname:
+            type: string
+      contactDetails:
+        type: object
+        properties:
+          email:
+            type: string
+responses: {}
+parameters: {}
+securityDefinitions: {}
+tags: []
