@@ -1,0 +1,205 @@
+swagger: "2.0"
+
+info:
+  title: AEM Intake Domain API
+  description: API for handling AEM Intake domain operations and data processing
+  version: "1.0.0"
+
+host: panamax-api-dev.ama-nonprod.usfoods.com
+basePath: /
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+
+  /aemintake-domain-api:
+    get:
+      summary: Health check endpoint
+      operationId: getHello
+      tags: [health]
+      responses:
+        200:
+          description: API is running successfully
+          schema:
+            type: string
+        500:
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ServerErrorResponse'
+
+  /aemintake-domain-api/v1/forms/bac:
+    post:
+      summary: Create new BAC form submission
+      operationId: createBacForm
+      tags: [forms]
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/BacFormRequestDto'
+      responses:
+        201:
+          description: BAC form created successfully
+          schema:
+            $ref: '#/definitions/BacFormResponseDto'
+
+  /aemintake-domain-api/v1/forms/bac/{id}:
+    get:
+      summary: Get BAC form by ID
+      operationId: getBacForm
+      tags: [forms]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/BacFormResponseDto'
+
+    put:
+      summary: Update BAC form
+      operationId: updateBacForm
+      tags: [forms]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/BacFormRequestDto'
+      responses:
+        200:
+          description: Updated
+          schema:
+            $ref: '#/definitions/BacFormResponseDto'
+
+  /aemintake-domain-api/v1/validate/email:
+    post:
+      summary: Validate Email
+      operationId: validateEmail
+      tags: [validate]
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/ValidateEmailRequestDto'
+      responses:
+        200:
+          description: Validation result
+          schema:
+            $ref: '#/definitions/ValidationResponseDto'
+
+definitions:
+
+  ServerErrorResponse:
+    type: object
+    properties:
+      statusCode: { type: number }
+      message: { type: string }
+      error: { type: string }
+
+  CustomerDetailsDto:
+    type: object
+    properties:
+      fullName: { type: string }
+      firstName: { type: string }
+      lastName: { type: string }
+      phone: { type: string }
+      email: { type: string }
+
+  AddressDto:
+    type: object
+    properties:
+      type: { type: string }
+      street: { type: string }
+      city: { type: string }
+      state: { type: string }
+      postalCode: { type: string }
+
+  BusinessDetailsDto:
+    type: object
+    properties:
+      businessName: { type: string }
+      address:
+        $ref: '#/definitions/AddressDto'
+      ownOperate: { type: string }
+      cuisine:
+        type: array
+        items: { type: string }
+      deliveryFrequency: { type: string }
+      weeklySpend: { type: string }
+
+  UtmParametersDto:
+    type: object
+    properties:
+      utmSource: { type: string }
+      utmMedium: { type: string }
+      utmCampaign: { type: string }
+      utmTerm: { type: string }
+      utmContent: { type: string }
+
+  MarketingDto:
+    type: object
+    properties:
+      optIn: { type: boolean }
+      contactPref:
+        type: array
+        items: { type: string }
+      utmParameters:
+        $ref: '#/definitions/UtmParametersDto'
+
+  SubmissionDto:
+    type: object
+    properties:
+      type: { type: string }
+      submitDateTime: { type: string }
+
+  BacFormRequestDto:
+    type: object
+    properties:
+      formType: { type: string }
+      visitorId: { type: string }
+      customerDetails:
+        $ref: '#/definitions/CustomerDetailsDto'
+      businessDetails:
+        $ref: '#/definitions/BusinessDetailsDto'
+      marketing:
+        $ref: '#/definitions/MarketingDto'
+      submission:
+        $ref: '#/definitions/SubmissionDto'
+
+  BacFormResponseDto:
+    allOf:
+      - $ref: '#/definitions/BacFormRequestDto'
+      - type: object
+        properties:
+          _id:
+            type: string
+
+  ValidateEmailRequestDto:
+    type: object
+    properties:
+      email:
+        type: string
+
+  ValidationResponseDto:
+    type: object
+    properties:
+      valid: { type: boolean }
+      field: { type: string }
+      message: { type: string }
+      details:
+        type: array
+        items: { type: string }
