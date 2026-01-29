@@ -1,0 +1,208 @@
+swagger: "2.0"
+
+info:
+  title: AEM Intake Domain API
+  description: API for handling AEM Intake domain operations and BAC form processing
+  version: 1.0.0
+
+host: api.example.com
+basePath: /
+schemes:
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+
+  /aemintake-domain-api:
+    get:
+      summary: Health check endpoint
+      operationId: getHello
+      responses:
+        200:
+          description: API is running successfully
+          schema:
+            type: string
+        500:
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ServerErrorResponse'
+
+  /aemintake-domain-api/v1/forms/bac:
+    post:
+      summary: Create new BAC form submission
+      operationId: createBacForm
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/BacFormRequestDto'
+      responses:
+        201:
+          description: BAC form created successfully
+          schema:
+            $ref: '#/definitions/BacFormResponseDto'
+        400:
+          description: Bad request
+          schema:
+            $ref: '#/definitions/ClientErrorResponse'
+        500:
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/ServerErrorResponse'
+
+  /aemintake-domain-api/v1/forms/bac/{id}:
+    get:
+      summary: Get BAC form submission by ID
+      operationId: getBacForm
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        200:
+          description: BAC form retrieved successfully
+          schema:
+            $ref: '#/definitions/BacFormResponseDto'
+        404:
+          description: Not found
+          schema:
+            $ref: '#/definitions/ClientErrorResponse'
+
+definitions:
+
+  ServerErrorResponse:
+    type: object
+    properties:
+      statusCode:
+        type: number
+      message:
+        type: string
+      error:
+        type: string
+    required: [statusCode, message, error]
+
+  ClientErrorResponse:
+    type: object
+    properties:
+      statusCode:
+        type: number
+      message:
+        type: string
+      error:
+        type: string
+    required: [statusCode, message, error]
+
+  CustomerDetailsDto:
+    type: object
+    properties:
+      fullName:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      phone:
+        type: string
+      email:
+        type: string
+    required: [fullName, firstName, lastName, phone, email]
+
+  AddressDto:
+    type: object
+    properties:
+      type:
+        type: string
+      street:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      postalCode:
+        type: string
+    required: [type, street, city, state, postalCode]
+
+  BusinessDetailsDto:
+    type: object
+    properties:
+      businessName:
+        type: string
+      address:
+        $ref: '#/definitions/AddressDto'
+      ownOperate:
+        type: string
+      cuisine:
+        type: array
+        items:
+          type: string
+      deliveryFrequency:
+        type: string
+      weeklySpend:
+        type: string
+    required: [businessName, address, ownOperate, cuisine, deliveryFrequency, weeklySpend]
+
+  UtmParametersDto:
+    type: object
+    properties:
+      utmSource:
+        type: string
+      utmMedium:
+        type: string
+      utmCampaign:
+        type: string
+      utmTerm:
+        type: string
+      utmContent:
+        type: string
+    required: [utmSource, utmMedium, utmCampaign, utmTerm, utmContent]
+
+  MarketingDto:
+    type: object
+    properties:
+      optIn:
+        type: boolean
+      contactPref:
+        type: array
+        items:
+          type: string
+      utmParameters:
+        $ref: '#/definitions/UtmParametersDto'
+    required: [optIn, contactPref, utmParameters]
+
+  SubmissionDto:
+    type: object
+    properties:
+      type:
+        type: string
+      submitDateTime:
+        type: string
+    required: [type, submitDateTime]
+
+  BacFormRequestDto:
+    type: object
+    properties:
+      visitorId:
+        type: string
+      customerDetails:
+        $ref: '#/definitions/CustomerDetailsDto'
+      businessDetails:
+        $ref: '#/definitions/BusinessDetailsDto'
+      marketing:
+        $ref: '#/definitions/MarketingDto'
+      submission:
+        $ref: '#/definitions/SubmissionDto'
+    required: [visitorId, customerDetails, businessDetails, marketing, submission]
+
+  BacFormResponseDto:
+    allOf:
+      - $ref: '#/definitions/BacFormRequestDto'
+      - type: object
+        properties:
+          _id:
+            type: string
+        required: [_id]
